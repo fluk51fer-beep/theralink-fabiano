@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Resultado | Fabiano Lucas</title>
+  <!-- Força o carregamento do estilo -->
+  <link rel="stylesheet" href="../style.css" onerror="this.onerror=null;this.href='data:text/css, body { font-family: Arial, sans-serif; padding: 20px; } .container { max-width: 600px; margin: 40px auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); } .btn-link { display: block; width: 100%; padding: 14px; background: #2c5282; color: white; text-align: center; border: none; border-radius: 10px; font-size: 18px; margin-top: 20px; text-decoration: none; }';">
+  <style>
+    /* Estilo de segurança caso o CSS externo falhe */
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #f5f8ff;
+      color: #333;
+      line-height: 1.6;
+    }
+    .container {
+      max-width: 700px;
+      margin: 50px auto;
+      padding: 30px;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 6px 25px rgba(0, 0, 0, 0.1);
+    }
+    header h1 {
+      font-size: 26px;
+      color: #2c5282;
+      text-align: center;
+    }
+    .diagnosis p, .recommendation p {
+      font-size: 16px;
+      line-height: 1.7;
+    }
+    .btn-link {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      background: #2c5282;
+      color: white;
+      text-align: center;
+      border: none;
+      border-radius: 10px;
+      font-size: 18px;
+      margin-top: 25px;
+      text-decoration: none;
+    }
+    .btn-link:hover {
+      background: #1d3a57;
+    }
+    .error {
+      color: #d32f2f;
+      font-size: 15px;
+      text-align: center;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="resultContainer">
+    <header>
+      <h1>Perfil do Seu Relacionamento</h1>
+      <p>Análise por <strong>Fabiano Lucas</strong></p>
+    </header>
+
+    <div class="diagnosis">
+      <h2>🔍 Diagnóstico Inicial</h2>
+      <p id="resultText">Carregando...</p>
+    </div>
+
+    <div class="recommendation">
+      <h2>💡 Recomendação</h2>
+      <p id="recommendation">Carregando...</p>
+    </div>
+
+    <div class="cta">
+      <h2>📅 Agende Sua Sessão com Fabiano</h2>
+      <p>Vamos juntos fortalecer ou reconstruir seu relacionamento com apoio especializado.</p>
+      <!-- Botão de agendamento visível mesmo se JS falhar -->
+      <a href="https://calendly.com/fabianolucas-casal" target="_blank" class="btn-link" id="scheduleBtn">
+        Agendar Minha Sessão
+      </a>
+      <button onclick="generatePDF()" style="margin-top:15px; width:100%; padding:12px; background:#1a3a5f; color:white; border:none; border-radius:8px; font-size:16px;">
+        📄 Baixar Relatório em PDF
+      </button>
+    </div>
+
+    <!-- Mensagem de erro (aparece só se falhar) -->
+    <p id="errorMessage" class="error" style="display:none;">
+      Você precisa responder o questionário primeiro. <a href="../fabiano" style="color:#2c5282;">Clique aqui para voltar</a>.
+    </p>
+  </div>
+
+  <!-- Carrega jsPDF com fallback -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" crossorigin="anonymous"></script>
+
+  <script>
+    // Função principal ao carregar a página
+    window.onload = function () {
+      try {
+        // Verifica se o totalScore foi salvo
+        const totalScore = localStorage.getItem("totalScore");
+
+        const resultTextEl = document.getElementById("resultText");
+        const recommendationEl = document.getElementById("recommendation");
+        const container = document.getElementById("resultContainer");
+        const errorEl = document.getElementById("errorMessage");
+        const scheduleBtn = document.getElementById("scheduleBtn");
+
+        if (totalScore === null || totalScore === undefined) {
+          // Dados não encontrados
+          resultTextEl.textContent = "Não foi possível carregar o diagnóstico.";
+          recommendationEl.textContent = "Parece que você não completou o questionário. Por favor, responda primeiro.";
+          container.style.backgroundColor = "#ffeaea";
+          errorEl.style.display = "block";
+          scheduleBtn.style.display = "none";
+          return;
+        }
+
+        const total = parseInt(totalScore);
+        const media = total / 10;
+
+        let resultText = "";
+        let recommendation = "";
+        let bgColor = "#f0f7ff";
+
+        if (media >= 2.8) {
+          resultText = "Seu relacionamento está saudável e com boa conexão emocional.";
+          recommendation = "Parabéns! Vocês têm uma base sólida. A terapia pode ajudar a fortalecer ainda mais sua comunicação, intimidade e projetos em comum.";
+          bgColor = "#e8f5e8";
+        } else if (media >= 2.0) {
+          resultText = "Seu relacionamento tem pontos fortes, mas também desafios importantes.";
+          recommendation = "Há sinais de distanciamento, conflitos ou falta de diálogo. A terapia de casal pode ajudar a reconectar, alinhar expectativas e restaurar a parceria.";
+          bgColor = "#fff9e6";
+        } else if (media >= 1.2) {
+          resultText = "Seu relacionamento está em fase de desgaste ou crise.";
+          recommendation = "Conflitos frequentes, desconfiança ou ressentimentos indicam necessidade de apoio profissional para decidir se vale a pena reconstruir ou se despedir com respeito.";
+          bgColor = "#fff4e6";
+        } else {
+          resultText = "Seu relacionamento está em situação de alta tensão ou desistência.";
+          recommendation = "O distanciamento emocional, falta de esperança e repetição de ciclos tóxicos exigem intervenção terapêutica urgente — seja para recomeçar ou para um desligamento consciente.";
+          bgColor = "#ffeaea";
+        }
+
+        // Atualiza o conteúdo
+        resultTextEl.textContent = resultText;
+        recommendationEl.textContent = recommendation;
+        container.style.backgroundColor = bgColor;
+
+        // Garante que o botão de agendamento esteja visível
+        scheduleBtn.style.display = "block";
+        scheduleBtn.href = "https://calendly.com/fabianolucas"; // 🔗 ATUALIZE COM SEU LINK REAL
+
+      } catch (error) {
+        console.error("Erro ao carregar resultados:", error);
+        document.getElementById("resultText").textContent = "Erro ao carregar diagnóstico.";
+        document.getElementById("recommendation").textContent = "Recarregue a página ou volte ao questionário.";
+        document.getElementById("resultContainer").style.backgroundColor = "#ffeaea";
+        document.getElementById("errorMessage").style.display = "block";
+        document.getElementById("scheduleBtn").style.display = "none";
+      }
+    };
+
+    // Função para gerar PDF (com proteção)
+    function generatePDF() {
+      try {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+
+        const totalScore = localStorage.getItem("totalScore");
+        if (!totalScore) {
+          alert("Erro: você precisa responder o questionário primeiro.");
+          window.location.href = "../fabiano";
+          return;
+        }
+
+        const media = (totalScore / 10).toFixed(2);
+        const resultText = document.getElementById("resultText").textContent;
+        const recommendation = document.getElementById("recommendation").textContent;
+
+        doc.setFontSize(20);
+        doc.text("Relatório - Casal", 10, 20);
+
+        doc.setFontSize(12);
+        doc.text(`Terapeuta: Fabiano Lucas`, 10, 35);
+        doc.text(`Pontuação: ${totalScore} / 30`, 10, 50);
+        doc.text(`Nível: ${media}`, 10, 65);
+        doc.text(`Diagnóstico:`, 10, 80);
+        doc.setFontSize(11);
+        const splitDiag = doc.splitTextToSize(resultText, 170);
+        doc.text(splitDiag, 10, 85);
+
+        doc.setFontSize(12);
+        doc.text(`Recomendação:`, 10, 110);
+        doc.setFontSize(11);
+        const splitRec = doc.splitTextToSize(recommendation, 170);
+        doc.text(splitRec, 10, 115);
+
+        doc.setFontSize(12);
+        doc.text("Agende sua sessão:", 10, 150);
+        doc.setTextColor(0, 0, 255);
+        doc.text("calendly.com/fabianolucas-casal", 10, 160);
+        doc.setTextColor(0, 0, 0);
+        doc.text("TheraLink - Transforme seu relacionamento.", 10, 180);
+
+        doc.save("relatorio-fabiano-casal.pdf");
+      } catch (e) {
+        alert("Erro ao gerar PDF. Tente novamente ou entre em contato.");
+        console.error(e);
+      }
+    }
+  </script>
+</body>
+</html>

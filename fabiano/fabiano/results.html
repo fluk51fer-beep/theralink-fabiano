@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Resultado | Fabiano Lucas</title>
+  <link rel="stylesheet" href="../style.css" />
+</head>
+<body>
+  <div class="container" id="resultContainer">
+    <header>
+      <h1>Perfil do Seu Relacionamento</h1>
+      <p>Análise por <strong>Fabiano Lucas</strong></p>
+    </header>
+
+    <div class="diagnosis">
+      <h2>🔍 Diagnóstico Inicial</h2>
+      <p id="resultText">Carregando...</p>
+    </div>
+
+    <div class="recommendation">
+      <h2>💡 Recomendação</h2>
+      <p id="recommendation">Carregando...</p>
+    </div>
+
+    <div class="cta">
+      <h2>📅 Agende Sua Sessão com Fabiano</h2>
+      <p>Vamos juntos fortalecer ou reconstruir seu relacionamento.</p>
+      <a href="https://calendly.com/fabianolucas-casal" target="_blank" class="btn-link">
+        Agendar Minha Sessão
+      </a>
+      <button onclick="generatePDF()" style="margin-top:15px;">
+        📄 Baixar Relatório em PDF
+      </button>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script>
+    const { jsPDF } = window.jspdf;
+
+    function generatePDF() {
+      const doc = new jsPDF();
+      const resultText = localStorage.getItem("resultText") || "";
+      const recommendation = localStorage.getItem("recommendation") || "";
+
+      doc.setFontSize(20);
+      doc.text("Relatório TheraLink - Casal", 10, 20);
+      doc.setFontSize(12);
+      doc.text(`Avaliação por: Fabiano Lucas`, 10, 35);
+      doc.text(`Diagnóstico: ${resultText}`, 10, 55);
+      doc.text(`Recomendação: ${recommendation}`, 10, 75);
+      doc.text("Agende em: calendly.com/fabianolucas-casal", 10, 95);
+      doc.text("TheraLink - Transforme seu relacionamento.", 10, 115);
+      doc.save("relatorio-casal-fabiano.pdf");
+    }
+
+    document.getElementById("resultText").textContent = localStorage.getItem("resultText") || "Não disponível.";
+    document.getElementById("recommendation").textContent = localStorage.getItem("recommendation") || "Não disponível.";
+    document.getElementById("resultContainer").style.backgroundColor = localStorage.getItem("bgColor") || "#f0f7ff";
+
+    // 🔗 ATUALIZE este link com seu Calendly real
+    document.querySelector(".btn-link").href = "https://calendly.com/fabianolucas-casal";
+  </script>
+</body>
+</html>

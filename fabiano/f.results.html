@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Resultado | Fabiano Lucas</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0f4f8;
+      color: #333;
+      line-height: 1.6;
+      padding: 20px;
+    }
+    .container {
+      max-width: 700px;
+      margin: 30px auto;
+      padding: 30px;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+    }
+    header h1 {
+      color: #2c5282;
+      text-align: center;
+    }
+    .diagnosis {
+      background: #e6f2ff;
+      padding: 15px;
+      border-radius: 10px;
+      margin: 20px 0;
+    }
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      background: #2c5282;
+      color: white;
+      text-align: center;
+      border: none;
+      border-radius: 10px;
+      margin-top: 25px;
+      text-decoration: none;
+      font-size: 18px;
+    }
+    .error {
+      color: #d32f2f;
+      text-align: center;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Seu Perfil Emocional</h1>
+      <p>Resultado da avaliação com <strong>Fabiano Lucas</strong></p>
+    </header>
+
+    <div class="diagnosis">
+      <h2>🔍 Diagnóstico</h2>
+      <p id="resultText">Carregando...</p>
+    </div>
+
+    <div class="recommendation">
+      <h2>💡 Recomendação</h2>
+      <p id="recommendation">Carregando...</p>
+    </div>
+
+    <a href="https://calendly.com/seu-link-aqui" target="_blank" class="btn" id="scheduleBtn">
+      Agendar Sessão com Fabiano
+    </a>
+  </div>
+
+  <script>
+    // Garante que tudo carrega
+    window.onload = function() {
+      const total = localStorage.getItem("fabiano_total");
+      const media = localStorage.getItem("fabiano_media");
+
+      const resultText = document.getElementById("resultText");
+      const recommendation = document.getElementById("recommendation");
+      const scheduleBtn = document.getElementById("scheduleBtn");
+
+      if (total === null || media === null) {
+        resultText.textContent = "Erro: dados não encontrados.";
+        recommendation.textContent = "Volte ao questionário e responda primeiro.";
+        resultText.parentElement.style.backgroundColor = "#ffeaea";
+        scheduleBtn.style.display = "none";
+        document.body.innerHTML += `<p style="text-align:center; margin-top:20px;">
+          <a href="index.html" style="color:#2c5282;">← Voltar ao questionário</a>
+        </p>`;
+        return;
+      }
+
+      const m = parseFloat(media);
+
+      if (m >= 2.5) {
+        resultText.textContent = "Relacionamento saudável com boa conexão.";
+        recommendation.textContent = "Parabéns! A terapia pode fortalecer ainda mais sua parceria.";
+      } else if (m >= 1.8) {
+        resultText.textContent = "Há desafios, mas também pontos fortes.";
+        recommendation.textContent = "A terapia pode ajudar a melhorar a comunicação e reconectar.";
+      } else {
+        resultText.textContent = "Relacionamento em crise ou desgaste.";
+        recommendation.textContent = "A intervenção terapêutica é importante para decidir o próximo passo.";
+      }
+
+      // Atualize com seu link real
+      scheduleBtn.href = "https://calendly.com/fabianolucas";
+    };
+  </script>
+</body>
+</html>

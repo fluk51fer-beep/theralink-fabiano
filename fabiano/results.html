@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Resultado | Fabiano Lucas</title>
+  <link rel="stylesheet" href="../style.css" />
+  <style>
+    .error {
+      color: #d32f2f;
+      font-size: 14px;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="resultContainer">
+    <header>
+      <h1>Perfil do Seu Relacionamento</h1>
+      <p>Análise por <strong>Fabiano Lucas</strong></p>
+    </header>
+
+    <div class="diagnosis">
+      <h2>🔍 Diagnóstico Inicial</h2>
+      <p id="resultText">Carregando...</p>
+    </div>
+
+    <div class="recommendation">
+      <h2>💡 Recomendação</h2>
+      <p id="recommendation">Carregando...</p>
+    </div>
+
+    <div class="cta">
+      <h2>📅 Agende Sua Sessão com Fabiano</h2>
+      <p>Vamos juntos fortalecer ou reconstruir seu relacionamento com apoio especializado.</p>
+      <a href="https://calendly.com/seu-terapeuta" target="_blank" class="btn-link" id="scheduleBtn">
+        Agendar Minha Sessão
+      </a>
+      <button onclick="generatePDF()" style="margin-top:15px;">
+        📄 Baixar Relatório em PDF
+      </button>
+    </div>
+
+    <!-- Mensagem de erro (se acessarem sem responder) -->
+    <p id="errorMessage" class="error" style="display:none;">
+      Parece que você acessou diretamente esta página. Por favor, volte ao questionário.
+    </p>
+  </div>
+
+  <!-- Carrega a biblioteca jsPDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <!-- Script corrigido -->
+  <script>
+    // Função chamada ao carregar a página
+    window.onload = function () {
+      const totalScore = localStorage.getItem("totalScore");
+      const resultTextEl = document.getElementById("resultText");
+      const recommendationEl = document.getElementById("recommendation");
+      const container = document.getElementById("resultContainer");
+      const errorEl = document.getElementById("errorMessage");
+      const scheduleBtn = document.getElementById("scheduleBtn");
+
+      // Verifica se há pontuação salva
+      if (totalScore === null) {
+        resultTextEl.textContent = "Erro: Dados não encontrados.";
+        recommendationEl.textContent = "Você precisa responder o questionário antes de ver o resultado.";
+        container.style.backgroundColor = "#ffeaea";
+        errorEl.style.display = "block";
+        scheduleBtn.href = "../fabiano"; // Redireciona para o início
+        scheduleBtn.textContent = "Voltar ao Questionário";
+        return;
+      }
+
+      const media = parseInt(total) / 10;
+
+      let resultText = "";
+      let recommendation = "";
+      let bgColor = "#f0f7ff";
+
+      const total = parseInt(totalScore);
+
+      if (media >= 2.8) {
+        resultText = "Seu relacionamento está saudável e com boa conexão emocional.";
+        recommendation = "Parabéns! Vocês têm uma base sólida. A terapia pode ajudar a fortalecer ainda mais sua comunicação, intimidade e projetos em comum.";
+        bgColor = "#e8f5e8";
+      } else if (media >= 2.0) {
+        resultText = "Seu relacionamento tem pontos fortes, mas também desafios importantes.";
+        recommendation = "Há sinais de distanciamento, conflitos ou falta de diálogo. A terapia de casal pode ajudar a reconectar, alinhar expectativas e restaurar a parceria.";
+        bgColor = "#fff9e6";
+      } else if (media >= 1.2) {
+        resultText = "Seu relacionamento está em fase de desgaste ou crise.";
+        recommendation = "Conflitos frequentes, desconfiança ou ressentimentos indicam necessidade de apoio profissional para decidir se vale a pena reconstruir ou se despedir com respeito.";
+        bgColor = "#fff4e6";
+      } else {
+        resultText = "Seu relacionamento está em situação de alta tensão ou desistência.";
+        recommendation = "O distanciamento emocional, falta de esperança e repetição de cic

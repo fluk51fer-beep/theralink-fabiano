@@ -5,16 +5,28 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Avaliação do Relacionamento | Fabiano Lucas</title>
   <link rel="stylesheet" href="../style.css" />
+  <style>
+    header h1 {
+      color: #2c5282;
+    }
+    .btn-link {
+      background: #2c5282;
+    }
+    .btn-link:hover {
+      background: #1d3a57;
+    }
+  </style>
 </head>
 <body>
   <div class="container">
     <header>
       <h1>Autoavaliação do Seu Relacionamento</h1>
       <p>Com <strong>Fabiano Lucas</strong>, terapeuta especializado em casais</p>
-      <p>Responda com sinceridade. Este diagnóstico ajuda a entender o estado atual do seu relacionamento.</p>
+      <p>Responda com sinceridade. Este diagnóstico preliminar ajuda a identificar o estado atual do seu relacionamento.</p>
     </header>
 
     <form id="quizForm">
+      <!-- Pergunta 1 -->
       <div class="question">
         <p>1. Com que frequência vocês se comunicam sobre sentimentos e necessidades emocionais?</p>
         <label><input type="radio" name="q1" value="0" required> Raramente</label>
@@ -23,16 +35,77 @@
         <label><input type="radio" name="q1" value="3"> Sempre</label>
       </div>
 
+      <!-- Pergunta 2 -->
       <div class="question">
-        <p>2. Quando há conflito, vocês conseguem discutir sem agressividade?</p>
+        <p>2. Quando há conflito, vocês conseguem discutir sem agressividade ou desrespeito?</p>
         <label><input type="radio" name="q2" value="0" required> Quase nunca</label>
         <label><input type="radio" name="q2" value="1"> Raramente</label>
         <label><input type="radio" name="q2" value="2"> Às vezes</label>
         <label><input type="radio" name="q2" value="3"> Quase sempre</label>
       </div>
 
-      <!-- Repita as outras 8 perguntas (use o modelo completo acima) -->
-      <!-- Para economizar espaço aqui, vou resumir, mas você já tem as 10 perguntas no histórico -->
+      <!-- Pergunta 3 -->
+      <div class="question">
+        <p>3. Vocês ainda sentem conexão afetiva e desejo um pelo outro?</p>
+        <label><input type="radio" name="q3" value="0" required> Não sinto mais</label>
+        <label><input type="radio" name="q3" value="1"> Pouco</label>
+        <label><input type="radio" name="q3" value="2"> Moderadamente</label>
+        <label><input type="radio" name="q3" value="3"> Muito</label>
+      </div>
+
+      <!-- Pergunta 4 -->
+      <div class="question">
+        <p>4. Vocês têm interesses, atividades ou momentos de qualidade em comum?</p>
+        <label><input type="radio" name="q4" value="0" required> Quase nenhum</label>
+        <label><input type="radio" name="q4" value="1"> Poucos</label>
+        <label><input type="radio" name="q4" value="2"> Alguns</label>
+        <label><input type="radio" name="q4" value="3"> Muitos</label>
+      </div>
+
+      <!-- Pergunta 5 -->
+      <div class="question">
+        <p>5. Você confia plenamente no seu parceiro(a)?</p>
+        <label><input type="radio" name="q5" value="0" required> Não confio</label>
+        <label><input type="radio" name="q5" value="1"> Tenho dúvidas</label>
+        <label><input type="radio" name="q5" value="2"> Confio na maioria das vezes</label>
+        <label><input type="radio" name="q5" value="3"> Confio totalmente</label>
+      </div>
+
+      <!-- Pergunta 6 -->
+      <div class="question">
+        <p>6. Vocês conseguem resolver decisões importantes juntos, sem um dominar o outro?</p>
+        <label><input type="radio" name="q6" value="0" required> Nunca</label>
+        <label><input type="radio" name="q6" value="1"> Raramente</label>
+        <label><input type="radio" name="q6" value="2"> Às vezes</label>
+        <label><input type="radio" name="q6" value="3"> Quase sempre</label>
+      </div>
+
+      <!-- Pergunta 7 -->
+      <div class="question">
+        <p>7. Você sente que seu parceiro(a) te entende e valoriza?</p>
+        <label><input type="radio" name="q7" value="0" required> Nunca</label>
+        <label><input type="radio" name="q7" value="1"> Raramente</label>
+        <label><input type="radio" name="q7" value="2"> Às vezes</label>
+        <label><input type="radio" name="q7" value="3"> Sempre</label>
+      </div>
+
+      <!-- Pergunta 8 -->
+      <div class="question">
+        <p>8. Há ressentimentos ou assuntos não resolvidos entre vocês?</p>
+        <label><input type="radio" name="q8" value="3" required> Muitos</label>
+        <label><input type="radio" name="q8" value="2"> Alguns</label>
+        <label><input type="radio" name="q8" value="1"> Poucos</label>
+        <label><input type="radio" name="q8" value="0"> Quase nenhum</label>
+      </div>
+
+      <!-- Pergunta 9 -->
+      <div class="question">
+        <p>9. Vocês demonstram afeto (abraços, elogios, carinho) no dia a dia?</p>
+        <label><input type="radio" name="q9" value="0" required> Quase nunca</label>
+        <label><input type="radio" name="q9" value="1"> Raramente</label>
+        <label><input type="radio" name="q9" value="2"> Às vezes</label>
+        <label><input type="radio" name="q9" value="3"> Sempre</label>
+      </div>
 
       <!-- Pergunta 10 -->
       <div class="question">

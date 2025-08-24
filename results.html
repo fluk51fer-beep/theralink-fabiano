@@ -1,148 +1,58 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Resultado | Fabiano Lucas</title>
-  <link rel="stylesheet" href="../style.css" />
-  <style>
-    .error {
-      color: #d32f2f;
-      font-size: 14px;
-      margin-top: 10px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seu Diagnóstico - TheraLink</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-  <div class="container" id="resultContainer">
-    <header>
-      <h1>Perfil do Seu Relacionamento</h1>
-      <p>Análise por <strong>Fabiano Lucas</strong></p>
+<body class="bg-gray-50 font-sans">
+
+    <header class="bg-white shadow-md">
+        <nav class="container mx-auto px-6 py-4">
+            <a href="index.html" class="text-2xl font-bold text-gray-800">TheraLink</a>
+        </nav>
     </header>
 
-    <div class="diagnosis">
-      <h2>🔍 Diagnóstico Inicial</h2>
-      <p id="resultText">Carregando...</p>
-    </div>
+    <main class="container mx-auto py-12 px-6">
+        <div class="max-w-3xl mx-auto bg-white p-8 rounded-lg shadow-lg text-center">
+            <h1 class="text-3xl font-bold text-gray-800 mb-4">Resultado do seu Diagnóstico</h1>
+            
+            <div id="resultado-container" class="text-left mb-8">
+                <!-- O resultado será inserido aqui -->
+            </div>
 
-    <div class="recommendation">
-      <h2>💡 Recomendação</h2>
-      <p id="recommendation">Carregando...</p>
-    </div>
+            <p class="text-lg text-gray-700 mb-6">
+                Este diagnóstico é um primeiro passo para a compreensão. A terapia pode oferecer as ferramentas para construir uma comunicação mais forte e um relacionamento mais saudável.
+            </p>
 
-    <div class="cta">
-      <h2>📅 Agende Sua Sessão com Fabiano</h2>
-      <p>Vamos juntos fortalecer ou reconstruir seu relacionamento com apoio especializado.</p>
-      <a href="https://calendly.com/seu-terapeuta" target="_blank" class="btn-link" id="scheduleBtn">
-        Agendar Minha Sessão
-      </a>
-      <button onclick="generatePDF()" style="margin-top:15px;">
-        📄 Baixar Relatório em PDF
-      </button>
-    </div>
+            <a href="https://calendly.com/fabianolucas/terapia" target="_blank" class="inline-block w-full bg-green-500 text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-green-600 transition duration-300">
+                Agendar uma Sessão de Terapia
+            </a>
+            <p class="text-sm text-gray-500 mt-2">Você será redirecionado para o Calendly para escolher o melhor horário.</p>
+        </div>
+    </main>
+    
+    <script>
+        // Pega a pontuação da URL e mostra o resultado
+        const urlParams = new URLSearchParams(window.location.search );
+        const score = parseInt(urlParams.get('score'));
+        const container = document.getElementById('resultado-container');
+        let title, message;
 
-    <!-- Mensagem de erro (se acessarem sem responder) -->
-    <p id="errorMessage" class="error" style="display:none;">
-      Parece que você acessou diretamente esta página. Por favor, volte ao questionário.
-    </p>
-  </div>
+        if (score >= 25) {
+            title = "Fundação Sólida (Pontuação: " + score + ")";
+            message = "Seu relacionamento parece ter uma base forte de comunicação e parceria. Continuem nutrindo esses pontos positivos e celebrando a conexão que vocês construíram. A terapia pode ajudar a fortalecer ainda mais esses laços.";
+        } else if (score >= 15) {
+            title = "Áreas para Atenção (Pontuação: " + score + ")";
+            message = "Existem pontos fortes na sua relação, mas também alguns desafios que merecem atenção. A comunicação pode não estar fluindo como deveria em certas áreas. Este é um bom momento para dialogar e entender as necessidades um do outro. A terapia é um excelente espaço para facilitar essa conversa.";
+        } else {
+            title = "Sinais de Alerta Importantes (Pontuação: " + score + ")";
+            message = "O diagnóstico sugere que há dificuldades significativas na comunicação e na parceria. É crucial abordar esses pontos para evitar que o desgaste aumente. Não hesite em procurar ajuda profissional. Um terapeuta pode oferecer um caminho seguro para reconstruir a confiança e o diálogo.";
+        }
 
-  <!-- Carrega a biblioteca jsPDF -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
-  <!-- Script corrigido -->
-  <script>
-    // Função chamada ao carregar a página
-    window.onload = function () {
-      const totalScore = localStorage.getItem("totalScore");
-      const resultTextEl = document.getElementById("resultText");
-      const recommendationEl = document.getElementById("recommendation");
-      const container = document.getElementById("resultContainer");
-      const errorEl = document.getElementById("errorMessage");
-      const scheduleBtn = document.getElementById("scheduleBtn");
-
-      // Verifica se há pontuação salva
-      if (totalScore === null) {
-        resultTextEl.textContent = "Erro: Dados não encontrados.";
-        recommendationEl.textContent = "Você precisa responder o questionário antes de ver o resultado.";
-        container.style.backgroundColor = "#ffeaea";
-        errorEl.style.display = "block";
-        scheduleBtn.href = "../fabiano"; // Redireciona para o início
-        scheduleBtn.textContent = "Voltar ao Questionário";
-        return;
-      }
-
-      const media = parseInt(total) / 10;
-
-      let resultText = "";
-      let recommendation = "";
-      let bgColor = "#f0f7ff";
-
-      const total = parseInt(totalScore);
-
-      if (media >= 2.8) {
-        resultText = "Seu relacionamento está saudável e com boa conexão emocional.";
-        recommendation = "Parabéns! Vocês têm uma base sólida. A terapia pode ajudar a fortalecer ainda mais sua comunicação, intimidade e projetos em comum.";
-        bgColor = "#e8f5e8";
-      } else if (media >= 2.0) {
-        resultText = "Seu relacionamento tem pontos fortes, mas também desafios importantes.";
-        recommendation = "Há sinais de distanciamento, conflitos ou falta de diálogo. A terapia de casal pode ajudar a reconectar, alinhar expectativas e restaurar a parceria.";
-        bgColor = "#fff9e6";
-      } else if (media >= 1.2) {
-        resultText = "Seu relacionamento está em fase de desgaste ou crise.";
-        recommendation = "Conflitos frequentes, desconfiança ou ressentimentos indicam necessidade de apoio profissional para decidir se vale a pena reconstruir ou se despedir com respeito.";
-        bgColor = "#fff4e6";
-      } else {
-        resultText = "Seu relacionamento está em situação de alta tensão ou desistência.";
-        recommendation = "O distanciamento emocional, falta de esperança e repetição de ciclos tóxicos exigem intervenção terapêutica urgente — seja para recomeçar ou para um desligamento consciente.";
-        bgColor = "#ffeaea";
-      }
-
-      // Exibe os resultados
-      resultTextEl.textContent = resultText;
-      recommendationEl.textContent = recommendation;
-      container.style.backgroundColor = bgColor;
-
-      // Atualiza o link do agendamento (substitua pelo seu)
-      scheduleBtn.href = "https://calendly.com/fabianolucas"; // 🔗 ATUALIZE COM SEU LINK
-    };
-
-    // Função para gerar PDF
-    function generatePDF() {
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF();
-
-      const totalScore = localStorage.getItem("totalScore");
-      if (!totalScore) {
-        alert("Erro: respostas não encontradas. Volte ao questionário.");
-        return;
-      }
-
-      const media = totalScore / 10;
-      const resultText = document.getElementById("resultText").textContent;
-      const recommendation = document.getElementById("recommendation").textContent;
-
-      doc.setFontSize(20);
-      doc.text("Relatório TheraLink - Casal", 10, 20);
-
-      doc.setFontSize(12);
-      doc.text(`Avaliação por: Fabiano Lucas`, 10, 35);
-      doc.text(`Pontuação total: ${totalScore} de 30`, 10, 50);
-      doc.text(`Média: ${media.toFixed(2)}`, 10, 65);
-      doc.text(`Diagnóstico: ${resultText}`, 10, 80);
-
-      // Quebra de linha manual para recomendação (se for longa)
-      const splitRecommendation = doc.splitTextToSize(recommendation, 170);
-      doc.text(splitRecommendation, 10, 95);
-
-      doc.text("Agende com Fabiano:", 10, 125);
-      doc.setTextColor(0, 0, 255);
-      doc.text("calendly.com/fabianolucas-casal", 10, 135);
-      doc.setTextColor(0, 0, 0);
-      doc.text("TheraLink - Transforme seu relacionamento.", 10, 155);
-
-      doc.save(`relatorio-casal-fabiano-${Date.now()}.pdf`);
-    }
-  </script>
+        container.innerHTML = `<h2 class="text-2xl font-semibold text-blue-600 mb-3">${title}</h2><p class="text-gray-600">${message}</p>`;
+    </script>
 </body>
 </html>

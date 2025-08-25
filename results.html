@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Seu Diagnóstico - TheraLink</title>
-    <link rel="stylesheet" href="style.css">
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body class="bg-gray-50 font-sans">
 
@@ -19,40 +19,21 @@
         <div class="max-w-3xl mx-auto bg-white p-8 rounded-lg shadow-lg text-center">
             <h1 class="text-3xl font-bold text-gray-800 mb-4">Resultado do seu Diagnóstico</h1>
             
-            <div id="resultado-container" class="text-left mb-8">
+            <div id="resultado-container" class="text-left mb-8 p-6 bg-gray-100 rounded-lg">
                 <!-- O resultado será inserido aqui -->
             </div>
 
             <p class="text-lg text-gray-700 mb-6">
-                Este diagnóstico é um primeiro passo para a compreensão. A terapia pode oferecer as ferramentas para construir uma comunicação mais forte e um relacionamento mais saudável.
+                Este diagnóstico é um primeiro passo. A terapia pode oferecer as ferramentas para construir uma comunicação mais forte e um relacionamento mais saudável.
             </p>
 
-            <a href="https://calendly.com/fabianolucas/terapia" target="_blank" class="inline-block w-full bg-green-500 text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-green-600 transition duration-300">
+            <a href="https://calendly.com/fabianolucas/terapia" target="_blank" class="inline-block w-full bg-green-500 text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-green-600 transition duration-300 shadow-lg">
                 Agendar uma Sessão de Terapia
             </a>
             <p class="text-sm text-gray-500 mt-2">Você será redirecionado para o Calendly para escolher o melhor horário.</p>
         </div>
     </main>
     
-    <script>
-        // Pega a pontuação da URL e mostra o resultado
-        const urlParams = new URLSearchParams(window.location.search );
-        const score = parseInt(urlParams.get('score'));
-        const container = document.getElementById('resultado-container');
-        let title, message;
-
-        if (score >= 25) {
-            title = "Fundação Sólida (Pontuação: " + score + ")";
-            message = "Seu relacionamento parece ter uma base forte de comunicação e parceria. Continuem nutrindo esses pontos positivos e celebrando a conexão que vocês construíram. A terapia pode ajudar a fortalecer ainda mais esses laços.";
-        } else if (score >= 15) {
-            title = "Áreas para Atenção (Pontuação: " + score + ")";
-            message = "Existem pontos fortes na sua relação, mas também alguns desafios que merecem atenção. A comunicação pode não estar fluindo como deveria em certas áreas. Este é um bom momento para dialogar e entender as necessidades um do outro. A terapia é um excelente espaço para facilitar essa conversa.";
-        } else {
-            title = "Sinais de Alerta Importantes (Pontuação: " + score + ")";
-            message = "O diagnóstico sugere que há dificuldades significativas na comunicação e na parceria. É crucial abordar esses pontos para evitar que o desgaste aumente. Não hesite em procurar ajuda profissional. Um terapeuta pode oferecer um caminho seguro para reconstruir a confiança e o diálogo.";
-        }
-
-        container.innerHTML = `<h2 class="text-2xl font-semibold text-blue-600 mb-3">${title}</h2><p class="text-gray-600">${message}</p>`;
-    </script>
+    <script type="module" src="script.js"></script>
 </body>
 </html>

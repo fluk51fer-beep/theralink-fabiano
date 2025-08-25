@@ -1,6 +1,13 @@
-/* Este arquivo pode ser usado para adicionar estilos personalizados que não são cobertos pelo Tailwind CSS. */
-/* Por enquanto, ele pode ficar vazio, mas é importante que ele exista e esteja linkado. */
+/* Adiciona uma fonte mais agradável e garante que o layout ocupe toda a altura */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap' );
 
 body {
-    font-family: 'Inter', sans-serif; /* Exemplo de uma fonte mais agradável. Você pode importar do Google Fonts se quiser. */
+    font-family: 'Inter', sans-serif;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main {
+    flex-grow: 1;
 }

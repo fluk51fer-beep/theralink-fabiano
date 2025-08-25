@@ -3,46 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TheraLink: Plataforma Completa para Psicólogos</title>
-    <meta name="description" content="Otimize sua prática com a TheraLink. Oferecemos agenda inteligente, prontuário eletrônico seguro e gestão de faturamento para psicólogos. Comece agora!">
-    <link rel="stylesheet" href="style.css">
+    <title>TheraLink: Diagnóstico e Terapia de Relacionamento</title>
+    <meta name="description" content="Descubra os pontos fortes e as áreas a serem melhoradas em seu relacionamento com nosso diagnóstico gratuito e agende uma sessão de terapia.">
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-white font-sans">
+<body class="bg-gray-50 font-sans">
 
     <header class="bg-white shadow-md sticky top-0 z-50">
         <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
             <a href="index.html" class="text-2xl font-bold text-gray-800">TheraLink</a>
-            <ul class="hidden md:flex space-x-6">
-                <li><a href="#inicio" class="text-gray-600 hover:text-blue-500">Início</a></li>
-                <li><a href="#beneficios" class="text-gray-600 hover:text-blue-500">Benefícios</a></li>
-            </ul>
-            <a href="login.html" class="hidden md:block bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-                Login do Profissional
-            </a>
+            <div class="flex items-center space-x-4">
+                <a href="login.html" class="text-gray-600 hover:text-blue-500">Login</a>
+                <a href="cadastro.html" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
+                    Para Profissionais
+                </a>
+            </div>
         </nav>
     </header>
 
     <main>
-        <section id="inicio" class="text-center py-20 px-6 bg-gray-50">
-            <h1 class="text-4xl font-bold text-gray-800 mb-4">Sente que seu relacionamento precisa de atenção?</h1>
-            <p class="text-lg text-gray-600 mb-8">Descubra os pontos fortes e as áreas de melhoria da sua relação com nosso diagnóstico rápido e gratuito.</p>
-            <a href="diagnostico.html" class="bg-green-500 text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-green-600 transition duration-300">
-                Começar Diagnóstico do Relacionamento
+        <section id="inicio" class="text-center py-20 px-6">
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-800 mb-4">Seu relacionamento merece atenção?</h1>
+            <p class="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">Descubra os pontos fortes e as áreas de melhoria da sua relação com nosso diagnóstico rápido, anônimo e gratuito.</p>
+            <a href="diagnostico.html" class="bg-green-500 text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-green-600 transition duration-300 shadow-lg">
+                Começar Diagnóstico Gratuito
             </a>
-            <div class="mt-12 flex justify-center">
-                <img src="./theralink-dashboard.png" alt="Imagem ilustrativa de um casal conversando em um ambiente tranquilo." width="800" height="550">
-            </div>
         </section>
 
-        <section id="beneficios" class="py-20 px-6">
-            <h2 class="text-3xl font-bold text-center text-gray-800 mb-12">Uma Ferramenta para Profissionais</h2>
-            <p class="text-center text-gray-600 max-w-3xl mx-auto mb-12">A TheraLink também é uma plataforma completa para psicólogos que desejam otimizar a gestão de seus consultórios e o acompanhamento terapêutico.</p>
-            <div class="container mx-auto grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-                <div class="text-center p-6"><h3 class="text-xl font-semibold text-gray-800 mb-2">Agenda Inteligente</h3><p class="text-gray-600">Organize seus horários e agendamentos.</p></div>
-                <div class="text-center p-6"><h3 class="text-xl font-semibold text-gray-800 mb-2">Prontuário Eletrônico</h3><p class="text-gray-600">Acesse o histórico dos pacientes de forma segura.</p></div>
-                <div class="text-center p-6"><h3 class="text-xl font-semibold text-gray-800 mb-2">Comunicação Direta</h3><p class="text-gray-600">Mantenha um canal seguro com seus pacientes.</p></div>
-                <div class="text-center p-6"><h3 class="text-xl font-semibold text-gray-800 mb-2">Faturamento Simplificado</h3><p class="text-gray-600">Controle pagamentos e simplifique a gestão.</p></div>
+        <section id="como-funciona" class="py-20 px-6 bg-white">
+            <h2 class="text-3xl font-bold text-center text-gray-800 mb-12">Como Funciona</h2>
+            <div class="container mx-auto grid md:grid-cols-3 gap-12 text-center">
+                <div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">1. Responda o Questionário</h3>
+                    <p class="text-gray-600">Leve de 3 a 5 minutos para responder 10 perguntas sobre a dinâmica do seu relacionamento.</p>
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">2. Receba seu Diagnóstico</h3>
+                    <p class="text-gray-600">Veja uma análise instantânea sobre os pontos fortes e os desafios da sua relação.</p>
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">3. Dê o Próximo Passo</h3>
+                    <p class="text-gray-600">Se desejar, agende uma sessão de terapia para explorar os resultados e encontrar caminhos.</p>
+                </div>
             </div>
         </section>
     </main>

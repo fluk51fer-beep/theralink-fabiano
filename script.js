@@ -113,14 +113,16 @@ async function runDashboardPage(session) {
     container.appendChild(table);
 }
 
+// Função para criar um atraso
+const delay = ms => new Promise(res => setTimeout(res, ms));
+
 async function runConfiguracaoPage(session) {
     const loadingEl = document.getElementById('loading-config');
     if (!loadingEl) return;
 
     let { data: questionnaire, error } = await supabase.from('questionnaires').select(`*, questions(*, options(*))`).eq('professional_id', session.user.id).single();
 
-    if (error && error.code === 'PGRST116') { // PGRST116: "exact one row was not found"
-        // Questionário não existe, vamos criar um!
+    if (error && error.code === 'PGRST116') {
         loadingEl.textContent = "Nenhum questionário encontrado. Criando um padrão para você...";
         const { data: newQ, error: newQError } = await supabase.from('questionnaires').insert({ title: 'Meu Diagnóstico de Relacionamento', professional_id: session.user.id }).select().single();
         if (newQError || !newQ) return loadingEl.textContent = "Falha crítica ao criar questionário.";
@@ -135,9 +137,15 @@ async function runConfiguracaoPage(session) {
             { question_id: newQuestion.id, text: 'Ruim', value: 0 }
         ]);
         
-        // Recarrega os dados agora que tudo foi criado
+        // *** MUDANÇA PRINCIPAL AQUI ***
+        loadingEl.textContent = "Finalizando configuração, aguarde um instante...";
+        await delay(1500); // Adiciona um atraso de 1.5 segundos
+
         const { data: reloadedQ, error: reloadError } = await supabase.from('questionnaires').select(`*, questions(*, options(*))`).eq('professional_id', session.user.id).single();
-        if (reloadError || !reloadedQ) return loadingEl.textContent = "Erro ao recarregar dados após criação.";
+        if (reloadError || !reloadedQ) {
+            loadingEl.textContent = "Erro ao recarregar dados após criação. Por favor, atualize a página.";
+            return;
+        }
         questionnaire = reloadedQ;
     } else if (error) {
         return loadingEl.textContent = `Erro inesperado: ${error.message}`;
@@ -233,4 +241,4 @@ function createOptionEl(opt) {
     return el;
 }
 
-// ... (as funções runDiagnosticoPage e runResultadoPage podem ser adicionadas aqui, mas a lógica principal está acima)
+// ... (as funções runDiagnosticoPage e runResultadoPage podem ser adicionadas aqui)

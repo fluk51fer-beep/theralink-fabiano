@@ -103,6 +103,7 @@ async function runDashboardPage(session) {
     }
     
     loadingMsg.style.display = 'none';
+    container.innerHTML = ''; // Limpa antes de adicionar a tabela
     const table = document.createElement('table');
     table.className = 'w-full text-left';
     table.innerHTML = `<thead><tr class="border-b"><th class="py-2">Data</th><th class="py-2">Pontuação</th><th class="py-2">Análise</th></tr></thead><tbody></tbody>`;
@@ -113,8 +114,40 @@ async function runDashboardPage(session) {
     container.appendChild(table);
 }
 
-// Função para criar um atraso
-const delay = ms => new Promise(res => setTimeout(res, ms));
+async function createDefaultQuestionnaire(userId, loadingEl) {
+    loadingEl.textContent = "Nenhum questionário encontrado. Criando um padrão para você...";
+    
+    const { data: newQ, error: newQError } = await supabase.from('questionnaires').insert({ title: 'Meu Diagnóstico de Relacionamento', professional_id: userId }).select().single();
+    if (newQError || !newQ) {
+        loadingEl.textContent = `Falha crítica ao criar questionário: ${newQError?.message || 'Erro desconhecido'}`;
+        return null;
+    }
+
+    const { data: newQuestion, error: newQuestionError } = await supabase.from('questions').insert({ questionnaire_id: newQ.id, text: 'Como você avalia a comunicação no seu relacionamento?', position: 1 }).select().single();
+    if (newQuestionError || !newQuestion) {
+        loadingEl.textContent = `Falha crítica ao criar pergunta padrão: ${newQuestionError?.message || 'Erro desconhecido'}`;
+        return null;
+    }
+
+    const { error: optionsError } = await supabase.from('options').insert([
+        { question_id: newQuestion.id, text: 'Excelente', value: 3 },
+        { question_id: newQuestion.id, text: 'Boa', value: 2 },
+        { question_id: newQuestion.id, text: 'Regular', value: 1 },
+        { question_id: newQuestion.id, text: 'Ruim', value: 0 }
+    ]);
+    if (optionsError) {
+        loadingEl.textContent = `Falha crítica ao criar opções padrão: ${optionsError?.message || 'Erro desconhecido'}`;
+        return null;
+    }
+    
+    // Recarrega os dados agora que tudo foi criado
+    const { data: reloadedQ, error: reloadError } = await supabase.from('questionnaires').select(`*, questions(*, options(*))`).eq('professional_id', userId).single();
+    if (reloadError || !reloadedQ) {
+        loadingEl.textContent = "Erro ao recarregar dados após criação. Por favor, atualize a página.";
+        return null;
+    }
+    return reloadedQ;
+}
 
 async function runConfiguracaoPage(session) {
     const loadingEl = document.getElementById('loading-config');
@@ -122,33 +155,11 @@ async function runConfiguracaoPage(session) {
 
     let { data: questionnaire, error } = await supabase.from('questionnaires').select(`*, questions(*, options(*))`).eq('professional_id', session.user.id).single();
 
-    if (error && error.code === 'PGRST116') {
-        loadingEl.textContent = "Nenhum questionário encontrado. Criando um padrão para você...";
-        const { data: newQ, error: newQError } = await supabase.from('questionnaires').insert({ title: 'Meu Diagnóstico de Relacionamento', professional_id: session.user.id }).select().single();
-        if (newQError || !newQ) return loadingEl.textContent = "Falha crítica ao criar questionário.";
-
-        const { data: newQuestion, error: newQuestionError } = await supabase.from('questions').insert({ questionnaire_id: newQ.id, text: 'Como você avalia a comunicação no seu relacionamento?', position: 1 }).select().single();
-        if (newQuestionError || !newQuestion) return loadingEl.textContent = "Falha crítica ao criar pergunta padrão.";
-
-        await supabase.from('options').insert([
-            { question_id: newQuestion.id, text: 'Excelente', value: 3 },
-            { question_id: newQuestion.id, text: 'Boa', value: 2 },
-            { question_id: newQuestion.id, text: 'Regular', value: 1 },
-            { question_id: newQuestion.id, text: 'Ruim', value: 0 }
-        ]);
-        
-        // *** MUDANÇA PRINCIPAL AQUI ***
-        loadingEl.textContent = "Finalizando configuração, aguarde um instante...";
-        await delay(1500); // Adiciona um atraso de 1.5 segundos
-
-        const { data: reloadedQ, error: reloadError } = await supabase.from('questionnaires').select(`*, questions(*, options(*))`).eq('professional_id', session.user.id).single();
-        if (reloadError || !reloadedQ) {
-            loadingEl.textContent = "Erro ao recarregar dados após criação. Por favor, atualize a página.";
-            return;
-        }
-        questionnaire = reloadedQ;
+    if (error && error.code === 'PGRST116') { // "exact one row was not found"
+        questionnaire = await createDefaultQuestionnaire(session.user.id, loadingEl);
+        if (!questionnaire) return; // A função createDefaultQuestionnaire já mostrou o erro.
     } else if (error) {
-        return loadingEl.textContent = `Erro inesperado: ${error.message}`;
+        return loadingEl.textContent = `Erro inesperado ao buscar questionário: ${error.message}`;
     }
 
     loadingEl.style.display = 'none';
@@ -172,13 +183,23 @@ function renderConfigurator(qData, userId) {
     `;
 
     const qList = document.getElementById('questions-list');
-    qData.questions.sort((a, b) => a.position - b.position).forEach(q => qList.appendChild(createQuestionEl(q)));
+    if (qData.questions) {
+        qData.questions.sort((a, b) => a.position - b.position).forEach(q => qList.appendChild(createQuestionEl(q)));
+    }
+
+    document.getElementById('q-title').addEventListener('blur', async (e) => {
+        await supabase.from('questionnaires').update({ title: e.target.value }).eq('id', qData.id);
+        showMessage('Título salvo!');
+    });
 
     document.getElementById('add-question-btn').addEventListener('click', async () => {
-        const { data, error } = await supabase.from('questions').insert({ questionnaire_id: qData.id, text: 'Nova Pergunta', position: qData.questions.length + 1 }).select().single();
+        const newPosition = (qData.questions?.length || 0) + 1;
+        const { data, error } = await supabase.from('questions').insert({ questionnaire_id: qData.id, text: 'Nova Pergunta', position: newPosition }).select().single();
         if (error) return showMessage('Erro ao adicionar pergunta', 'error');
         data.options = [];
         qList.appendChild(createQuestionEl(data));
+        if (!qData.questions) qData.questions = [];
+        qData.questions.push(data);
     });
 }
 
@@ -196,7 +217,9 @@ function createQuestionEl(q) {
     `;
 
     const optionsList = el.querySelector('.options-list');
-    q.options.forEach(opt => optionsList.appendChild(createOptionEl(opt)));
+    if (q.options) {
+        q.options.forEach(opt => optionsList.appendChild(createOptionEl(opt)));
+    }
 
     el.querySelector('.question-text').addEventListener('blur', async (e) => {
         await supabase.from('questions').update({ text: e.target.value }).eq('id', q.id);
@@ -241,4 +264,81 @@ function createOptionEl(opt) {
     return el;
 }
 
-// ... (as funções runDiagnosticoPage e runResultadoPage podem ser adicionadas aqui)
+function runDiagnosticoPage() {
+    const quizContainer = document.getElementById('quiz-container');
+    const loadingQuiz = document.getElementById('loading-quiz');
+    const params = new URLSearchParams(window.location.search);
+    const professionalId = params.get('prof_id');
+
+    if (!professionalId) {
+        if(loadingQuiz) loadingQuiz.innerHTML = `<h1 class="text-3xl font-bold text-red-500">Erro</h1><p>Link de diagnóstico inválido. ID do profissional não encontrado.</p>`;
+        return;
+    }
+    
+    async function loadQuiz() {
+        const { data: questionnaire, error } = await supabase.from('questionnaires').select(`*, questions(*, options(*))`).eq('professional_id', professionalId).single();
+        if (error || !questionnaire) {
+            if(loadingQuiz) loadingQuiz.innerHTML = `<h1 class="text-3xl font-bold text-red-500">Erro</h1><p>Não foi possível carregar o questionário.</p>`;
+            return;
+        }
+
+        if(loadingQuiz) loadingQuiz.style.display = 'none';
+        
+        const form = document.createElement('form');
+        form.id = 'quizForm';
+        form.innerHTML = `<h1 class="text-3xl font-bold text-center text-gray-800 mb-2">${questionnaire.title}</h1><p class="text-center text-gray-600 mb-8">Suas respostas são anônimas.</p>`;
+        
+        if (questionnaire.questions) {
+            questionnaire.questions.sort((a, b) => a.position - b.position).forEach(q => {
+                const questionBlock = document.createElement('div');
+                questionBlock.className = 'mb-6';
+                const optionsHTML = q.options.map(opt => `<label class="flex items-center p-3 border rounded-lg hover:bg-gray-100 cursor-pointer"><input type="radio" name="question_${q.id}" value="${opt.value}" class="mr-3" required><span>${opt.text}</span></label>`).join('');
+                questionBlock.innerHTML = `<p class="text-lg font-semibold text-gray-700 mb-3">${q.text}</p><div class="space-y-2">${optionsHTML}</div>`;
+                form.appendChild(questionBlock);
+            });
+        }
+
+        const submitBtn = document.createElement('button');
+        submitBtn.type = 'submit';
+        submitBtn.className = 'w-full bg-blue-500 text-white px-8 py-3 rounded-lg font-semibold text-lg hover:bg-blue-600 transition duration-300 mt-8';
+        submitBtn.textContent = 'Ver Meu Diagnóstico';
+        form.appendChild(submitBtn);
+        
+        if(quizContainer) quizContainer.appendChild(form);
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            let totalScore = 0;
+            const formData = new FormData(form);
+            for (let value of formData.values()) {
+                totalScore += parseInt(value);
+            }
+            
+            const analysisText = getAnalysisText(totalScore).title;
+            await supabase.from('diagnostics').insert([{ score: totalScore, analysis: analysisText, professional_id: professionalId }]);
+            
+            localStorage.setItem('diagnosisScore', totalScore);
+            window.location.href = `resultado.html`;
+        });
+    }
+    loadQuiz();
+}
+
+function runResultadoPage() {
+    const container = document.getElementById('resultado-container');
+    if (!container) return;
+    const score = localStorage.getItem('diagnosisScore');
+    if (score === null) {
+        container.innerHTML = `<h2 class="text-2xl font-semibold text-red-600 mb-3">Erro</h2><p class="text-gray-600">Nenhuma pontuação encontrada. Por favor, realize o diagnóstico primeiro.</p>`;
+    } else {
+        const { title, message } = getAnalysisText(parseInt(score));
+        container.innerHTML = `<h2 class="text-2xl font-semibold text-blue-600 mb-3">${title}</h2><p class="text-gray-600">${message}</p><div class="mt-8"><a href="https://calendly.com/fabianolucas/terapia" target="_blank" class="bg-green-500 text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-green-600 transition duration-300 shadow-lg">Agende sua Sessão</a></div>`;
+        localStorage.removeItem('diagnosisScore' );
+    }
+}
+
+function getAnalysisText(score) {
+    if (score >= 25) return { title: "Fundação Sólida", message: "Seu relacionamento demonstra uma base de comunicação e parceria muito forte. Continuem nutrindo essa conexão." };
+    if (score >= 15) return { title: "Áreas para Atenção", message: "Existem pontos fortes, mas também áreas que merecem atenção e diálogo para fortalecer ainda mais o vínculo de vocês." };
+    return { title: "Sinais de Alerta Importantes", message: "O diagnóstico indica desafios significativos que podem estar causando desconforto. Considerar uma conversa com um profissional pode abrir novos caminhos." };
+}

@@ -8,32 +8,16 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="bg-gray-50 font-sans">
-
     <header class="bg-white shadow-md">
         <nav class="container mx-auto px-6 py-4">
             <a href="index.html" class="text-2xl font-bold text-gray-800">TheraLink</a>
         </nav>
     </header>
-
     <main class="container mx-auto py-12 px-6">
-        <div class="max-w-3xl mx-auto bg-white p-8 rounded-lg shadow-lg text-center">
-            <h1 class="text-3xl font-bold text-gray-800 mb-4">Resultado do seu Diagnóstico</h1>
-            
-            <div id="resultado-container" class="text-left mb-8 p-6 bg-gray-100 rounded-lg">
-                <!-- O resultado será inserido aqui -->
-            </div>
-
-            <p class="text-lg text-gray-700 mb-6">
-                Este diagnóstico é um primeiro passo. A terapia pode oferecer as ferramentas para construir uma comunicação mais forte e um relacionamento mais saudável.
-            </p>
-
-            <a href="https://calendly.com/fabianolucas/terapia" target="_blank" class="inline-block w-full bg-green-500 text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-green-600 transition duration-300 shadow-lg">
-                Agendar uma Sessão de Terapia
-            </a>
-            <p class="text-sm text-gray-500 mt-2">Você será redirecionado para o Calendly para escolher o melhor horário.</p>
+        <div id="resultado-container" class="max-w-3xl mx-auto bg-white text-center p-8 rounded-lg shadow-lg">
+            <!-- O resultado será inserido aqui pelo script.js -->
         </div>
     </main>
-    
-    <script type="module" src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>

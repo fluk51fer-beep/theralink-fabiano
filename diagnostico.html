@@ -8,23 +8,20 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="bg-gray-50 font-sans">
-
     <header class="bg-white shadow-md">
         <nav class="container mx-auto px-6 py-4">
             <a href="index.html" class="text-2xl font-bold text-gray-800">TheraLink</a>
         </nav>
     </header>
-
     <main class="container mx-auto py-12 px-6">
-        <div id="quiz-container" class="max-w-3xl mx-auto bg-white p-8 rounded-lg shadow-lg">
-            <div id="loading-quiz">
-                <h1 class="text-3xl font-bold text-center text-gray-800 mb-2">Carregando Questionário...</h1>
-                <p class="text-center text-gray-600">Por favor, aguarde.</p>
-            </div>
-            <!-- O questionário dinâmico será inserido aqui -->
+        <div class="max-w-3xl mx-auto bg-white p-8 rounded-lg shadow-lg">
+            <h1 class="text-3xl font-bold text-center text-gray-800 mb-2">Diagnóstico Rápido</h1>
+            <p class="text-center text-gray-600 mb-8">Suas respostas são 100% confidenciais.</p>
+            <form id="quiz-form">
+                <!-- As perguntas serão inseridas aqui pelo script.js -->
+            </form>
         </div>
     </main>
-    
-    <script type="module" src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
